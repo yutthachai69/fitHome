@@ -69,7 +69,7 @@ export default async function MealPlanDetailPage({ params }: PageProps) {
   `, [mealPlanId])
 
   // Organize meals by day
-  const mealsByDay: { [key: number]: unknown[] } = {}
+  const mealsByDay: Record<number, any[]> = {}
   const mealTypes = ['breakfast', 'lunch', 'dinner', 'snack']
 
   mealsResult.rows.forEach((meal: unknown) => {
@@ -78,8 +78,25 @@ export default async function MealPlanDetailPage({ params }: PageProps) {
     if (!mealsByDay[day]) {
       mealsByDay[day] = []
     }
+    const m = meal as {
+      id?: number
+      name?: string
+      description?: string
+      preparation_time_minutes?: number
+      calories?: number
+      protein?: number
+      carbs?: number
+      fat?: number
+    }
     mealsByDay[day].push({
-      ...meal,
+      id: m.id,
+      name: m.name,
+      description: m.description,
+      preparation_time_minutes: m.preparation_time_minutes,
+      calories: m.calories,
+      protein: m.protein,
+      carbs: m.carbs,
+      fat: m.fat,
       meal_type_label: mealTypes[mealData.meal_order - 1] || 'other'
     })
   })
