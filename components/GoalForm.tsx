@@ -1,8 +1,14 @@
 'use client'
 import { useEffect, useState } from 'react'
 
+type Goal = {
+  start_weight_kg: number
+  target_weight_kg: number
+  target_date: string | null
+}
+
 export default function GoalForm() {
-  const [goal, setGoal] = useState<unknown>(null)
+  const [goal, setGoal] = useState<Goal | null>(null)
   const [form, setForm] = useState({ startWeightKg: '', targetWeightKg: '', targetDate: '' })
   const [loading, setLoading] = useState(false)
 
@@ -14,7 +20,7 @@ export default function GoalForm() {
     try {
       const res = await fetch('/api/goal')
       const data = await res.json()
-      setGoal(data.goal)
+      setGoal(data.goal as Goal)
     } catch (error) {
       console.error('Error fetching goal:', error)
     }
@@ -37,7 +43,7 @@ export default function GoalForm() {
       
       if (res.ok) {
         const data = await res.json()
-        setGoal(data.goal)
+        setGoal(data.goal as Goal)
         setForm({ startWeightKg: '', targetWeightKg: '', targetDate: '' })
         alert('บันทึกเป้าเรียบร้อยแล้ว!')
       } else {
