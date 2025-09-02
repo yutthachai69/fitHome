@@ -85,16 +85,25 @@ export default async function MealPlansPage() {
               โปรแกรมอาหารที่กำลังใช้งาน
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {activeMealPlans.map((plan: unknown) => (
-                <div key={plan.id} className="bg-white rounded-xl p-4 border border-blue-200">
-                  <h3 className="font-semibold text-gray-900 mb-2">{plan.plan_name}</h3>
-                  <p className="text-sm text-gray-600 mb-2">{plan.plan_description}</p>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-blue-600">แคลอรี่: {plan.target_calories}</span>
-                    <span className="text-gray-500">{plan.duration_weeks} สัปดาห์</span>
+              {activeMealPlans.map((plan) => {
+                const p = plan as {
+                  id: number
+                  plan_name: string
+                  plan_description: string
+                  target_calories: number | null
+                  duration_weeks: number | null
+                }
+                return (
+                  <div key={p.id} className="bg-white rounded-xl p-4 border border-blue-200">
+                    <h3 className="font-semibold text-gray-900 mb-2">{p.plan_name}</h3>
+                    <p className="text-sm text-gray-600 mb-2">{p.plan_description}</p>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-blue-600">แคลอรี่: {p.target_calories}</span>
+                      <span className="text-gray-500">{p.duration_weeks} สัปดาห์</span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         )}
