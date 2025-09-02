@@ -137,8 +137,11 @@ export async function POST() {
       if (programId && exerciseId) {
         await query(
           `INSERT INTO program_exercises (program_id, exercise_id, day_of_week, sets, reps, duration_minutes, rest_seconds, order_index)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-           ON CONFLICT (program_id, exercise_id, day_of_week, order_index) DO NOTHING`,
+           SELECT $1, $2, $3, $4, $5, $6, $7, $8
+           WHERE NOT EXISTS (
+             SELECT 1 FROM program_exercises 
+             WHERE program_id = $1 AND exercise_id = $2 AND day_of_week = $3 AND order_index = $8
+           )`,
           [
             programId,
             exerciseId,
