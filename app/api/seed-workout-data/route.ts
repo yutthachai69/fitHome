@@ -139,7 +139,16 @@ export async function POST() {
           `INSERT INTO program_exercises (program_id, exercise_id, day_of_week, sets, reps, duration_minutes, rest_seconds, order_index)
            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
            ON CONFLICT (program_id, exercise_id, day_of_week, order_index) DO NOTHING`,
-          [programId, exerciseId, pe.day, pe.sets, pe.reps, pe.duration, pe.rest, pe.order]
+          [
+            programId,
+            exerciseId,
+            pe.day,
+            pe.sets ?? null,
+            pe.reps ?? null,
+            pe.duration ?? null,
+            pe.rest ?? null,
+            pe.order
+          ]
         )
       }
     }
@@ -152,7 +161,8 @@ export async function POST() {
     })
   } catch (error) {
     console.error('Error seeding workout data:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    const message = error instanceof Error ? error.message : 'Unknown error'
+    return NextResponse.json({ error: 'Internal server error', details: message }, { status: 500 })
   }
 }
 

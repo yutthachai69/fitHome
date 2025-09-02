@@ -49,6 +49,12 @@ export async function POST() {
       )
     `)
 
+    // Ensure a unique index exists to support ON CONFLICT in seed-workout-data
+    await query(`
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_program_exercises_unique
+      ON program_exercises (program_id, exercise_id, day_of_week, order_index)
+    `)
+
     // สร้างตาราง user_active_programs
     await query(`
       CREATE TABLE IF NOT EXISTS user_active_programs (
