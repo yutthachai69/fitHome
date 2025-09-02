@@ -9,6 +9,19 @@ interface PageProps {
   params: { id: string }
 }
 
+type MealBase = {
+  id?: number
+  name?: string
+  description?: string
+  preparation_time_minutes?: number
+  calories?: number
+  protein?: number
+  carbs?: number
+  fat?: number
+}
+
+type MealItem = MealBase & { meal_type_label: string }
+
 export default async function MealPlanDetailPage({ params }: PageProps) {
   const session = await getServerSession(authOptions)
   
@@ -69,7 +82,7 @@ export default async function MealPlanDetailPage({ params }: PageProps) {
   `, [mealPlanId])
 
   // Organize meals by day
-  const mealsByDay: Record<number, any[]> = {}
+  const mealsByDay: Record<number, MealItem[]> = {}
   const mealTypes = ['breakfast', 'lunch', 'dinner', 'snack']
 
   mealsResult.rows.forEach((meal: unknown) => {
@@ -78,17 +91,8 @@ export default async function MealPlanDetailPage({ params }: PageProps) {
     if (!mealsByDay[day]) {
       mealsByDay[day] = []
     }
-    const m = meal as {
-      id?: number
-      name?: string
-      description?: string
-      preparation_time_minutes?: number
-      calories?: number
-      protein?: number
-      carbs?: number
-      fat?: number
-    }
-    mealsByDay[day].push({
+    const m = meal as MealBase
+    const item: MealItem = {
       id: m.id,
       name: m.name,
       description: m.description,
@@ -98,7 +102,8 @@ export default async function MealPlanDetailPage({ params }: PageProps) {
       carbs: m.carbs,
       fat: m.fat,
       meal_type_label: mealTypes[mealData.meal_order - 1] || 'other'
-    })
+    }
+    mealsByDay[day].push(item)
   })
 
   // Calculate total calories and macros for the plan
