@@ -32,8 +32,10 @@ export async function POST() {
     for (const exercise of exercises) {
       await query(
         `INSERT INTO workout_exercises (name, description, muscle_group, equipment, difficulty, instructions)
-         VALUES ($1, $2, $3, $4, $5, $6)
-         ON CONFLICT (name) DO NOTHING`,
+         SELECT $1, $2, $3, $4, $5, $6
+         WHERE NOT EXISTS (
+           SELECT 1 FROM workout_exercises WHERE name = $1
+         )`,
         [exercise.name, exercise.description, exercise.muscle_group, exercise.equipment, exercise.difficulty, exercise.instructions]
       )
     }
@@ -51,8 +53,10 @@ export async function POST() {
     for (const program of programs) {
       await query(
         `INSERT INTO workout_programs (name, description, difficulty, duration_weeks, category)
-         VALUES ($1, $2, $3, $4, $5)
-         ON CONFLICT (name) DO NOTHING`,
+         SELECT $1, $2, $3, $4, $5
+         WHERE NOT EXISTS (
+           SELECT 1 FROM workout_programs WHERE name = $1
+         )`,
         [program.name, program.description, program.difficulty, program.duration_weeks, program.category]
       )
     }
