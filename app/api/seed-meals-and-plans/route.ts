@@ -264,3 +264,7 @@ export async function POST() {
     return NextResponse.json({ error: 'Internal server error', details: errorMessage }, { status: 500 })
   }
 }
+
+export async function GET() {
+  return POST()
+}

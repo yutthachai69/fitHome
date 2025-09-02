@@ -190,3 +190,8 @@ export async function POST() {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
+
+// Convenience: allow opening this endpoint in a browser (GET) to run the same logic
+export async function GET() {
+  return POST()
+}
