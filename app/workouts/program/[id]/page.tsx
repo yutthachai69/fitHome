@@ -178,16 +178,19 @@ export default async function ProgramDetailPage({ params }: { params: { id: stri
         {/* Program Content */}
         {exercises.length > 0 ? (
           <div className="space-y-6">
-            {Object.keys(exercisesByDay).sort((a, b) => parseInt(a) - parseInt(b)).map((day) => (
+            {Object.keys(exercisesByDay).sort((a, b) => parseInt(a) - parseInt(b)).map((day) => {
+              const dayNumber = parseInt(day)
+              const dayExercises = (exercisesByDay[dayNumber] || []) as ExerciseItem[]
+              return (
               <div key={day} className="bg-white rounded-3xl shadow-lg p-6 border border-gray-100">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                   <svg className="w-6 h-6 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  วัน{dayNames[parseInt(day)]}
+                  วัน{dayNames[dayNumber]}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {(exercisesByDay[day] as ExerciseItem[]).map((exercise, index) => (
+                  {dayExercises.map((exercise, index) => (
                     <div key={exercise.id} className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-4 border border-gray-200 hover:shadow-md transition-all duration-300">
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="font-semibold text-gray-900">{exercise.exercise_name}</h3>
@@ -226,7 +229,7 @@ export default async function ProgramDetailPage({ params }: { params: { id: stri
                   ))}
                 </div>
               </div>
-            ))}
+            )})}
           </div>
         ) : (
           <div className="bg-white rounded-3xl shadow-lg p-8 border border-gray-100 text-center">
