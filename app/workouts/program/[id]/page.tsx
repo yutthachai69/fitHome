@@ -56,12 +56,24 @@ export default async function ProgramDetailPage({ params }: { params: { id: stri
   const exercises = exercisesResult.rows
 
   // จัดกลุ่มท่าตามวัน
-  const exercisesByDay = exercises.reduce((acc, exercise) => {
+  type ExerciseItem = {
+    id: number
+    day_of_week: number
+    exercise_name: string
+    exercise_description: string
+    exercise_difficulty: string
+    sets?: number | null
+    reps?: number | null
+    duration_minutes?: number | null
+    rest_seconds?: number | null
+  }
+
+  const exercisesByDay = (exercises as ExerciseItem[]).reduce((acc, exercise) => {
     const day = exercise.day_of_week
     if (!acc[day]) { acc[day] = [] }
     acc[day].push(exercise)
     return acc
-  }, {} as Record<number, unknown[]>)
+  }, {} as Record<number, ExerciseItem[]>)
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -175,7 +187,7 @@ export default async function ProgramDetailPage({ params }: { params: { id: stri
                   วัน{dayNames[parseInt(day)]}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {exercisesByDay[day].map((exercise, index) => (
+                  {(exercisesByDay[day] as ExerciseItem[]).map((exercise, index) => (
                     <div key={exercise.id} className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-4 border border-gray-200 hover:shadow-md transition-all duration-300">
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="font-semibold text-gray-900">{exercise.exercise_name}</h3>
